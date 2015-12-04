@@ -1,0 +1,63 @@
+.\"
+.\" replogtool.1 - the *roff document processor source for the lessfs replogtool manual
+.\" You may contact the author by:
+.\" e-mail: mruijter@gmail.com
+.\"
+.TH replogtool 1 .\" "Lessfs reference" v1.5.3 "2011"
+.SH NAME
+replogtool is a replication logfile parser for lessfs
+.SH SYNTAX
+.nf
+\fBreplogtool\fR ./replogtool -r /path_to_replogfile -b blocksize\\
+\fBreplogtool\fR ./replogtool -r /path_to_replogfile -c /path_to/lessfs_slave.cfg\\
+.fi
+.SH VERSION
+This man page documents replogtool from lessfs 1.5.3
+.SH DESCRIPTION
+\fBreplogtool\fR is a utility for use with lessfs that can be used to either analyse a replication logfile from 
+a lessfs master server or to merge a replication logfile with an unmounted slave. 
+\FB\
+.PP
+.SS OPTIONS
+.IP "-r path_to_replogfile"
+Specifies the path to the replication logfile that was obtained from the master.
+Need to be used in combination with -b and / or -c.
+.IP "-b NNNN"
+Specify the blocksize that the master uses.
+Valid values for NNNN are : 4096,8192,16384,32768,65536,131072
+-b must be specified when replogtool is used without -c.
+.IP "-c /path_to_lessfs_slave_config"
+Specify the path of the lessfs slave configuration file. The replication log will be written to the specified slave.
+.PP
+.SS EXAMPLES
+.IP "./replogtool -r /data/dta/replog -b 131072"
+Display the contents of a replication logfile.
+.br
+.IP "./replogtool -r /data/dta/replog -c /etc/lessfs-slave.cfg"
+Update the slave with the specified replication logfile.
+.PP
+Email bug reports to
+.BR mruijter@gmail.com .
+Be sure to include the word ``lessfsbug'' somewhere in the ``Subject:'' field.
+.SH COPYRIGHT
+Copyright (C) 2008-2011  Mark Ruijter
+.PP
+You can redistribute lessfs and/or modify it
+under the terms of either
+(1) the GNU General Public License as published by
+the Free Software Foundation; or (2) obtain a commercial license 
+by contacting the Author.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see \fB<http://www.gnu.org/licenses/>\fR.
+.PP
+lessfs is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+.SH AUTHOR
+.PP
+Mark Ruijter <mruijter@gmail.com>
+.br
+.SH BUGS
+Unknown

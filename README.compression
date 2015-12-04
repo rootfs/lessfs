@@ -1,0 +1,24 @@
+Lessfs supports different types of compression.
+Data that has not been stored before is will
+be compressed with the choosen algorithm before
+it's written to disk.
+
+COMPRESSION=none
+Disables the use of compression. This will give
+the highest throughput on systems that are not
+limited by disk transfer speed.
+COMPRESSION=qlz
+This has long been the default for Lessfs. 
+It's pretty fast and gives a moderate compression.
+COMPRESSION=qlz15
+This is the latest quicklz 1.5 compression algorithm.
+It's faster then it's predecessor qlz.
+COMPRESSION=snappy    **NEW**
+This is the fastest compression available with Lessfs.
+It gives a moderate compression with very high 
+throughput.
+COMPRESSION=deflate
+Deflate provides very high compression ratios.
+It's faster then bzip and gzip.
+COMPESSION=bzip or gzip
+High compression ratios but slow.

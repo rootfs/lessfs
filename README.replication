@@ -1,0 +1,128 @@
+Lessfs supports master/slave replication as of release 1.1.9.
+
+To configure lessfs as master the following lines need to
+be added to lessfs.cfg:
+REPLICATION=masterslave
+REPLICATION_PARTNER_IP=127.0.0.1
+REPLICATION_PARTNER_PORT=201
+REPLICATION_ROLE=master
+
+*NOTE - This form of replication is no longer recommended.
+Please consider batch replication.
+
+Alternatively you can add this to the masters lessfs.cfg to enable
+batch replication :
+REPLICATION=masterslave
+REPLICATION_PARTNER_IP=-1
+REPLICATION_PARTNER_PORT=101
+REPLICATION_ROLE=master
+
+In this case the master will not try to initiate replication
+to the slave. Instead it will write a replication logfile that
+can be transferred to the slave using your favorite file transfer
+utility. (E.g. scp/ftp). 
+
+In this case you have to add these lines to the slave:
+REPLICATION=masterslave
+REPLICATION_ROLE=slave
+REPLICATION_LISTEN_IP=0.0.0.0
+REPLICATION_WATCHDIR=/data/watchdir
+REPLICATION_LISTEN_PORT=101
+
+The REPLICATION_WATCHDIR is used when you use replication logfiles.
+
+On the slave you would have something like this running in the cron:
+----
+#!/bin/sh
+SOURCE=/data/incomming/
+TARGET=/data/watchdir/
+
+chmod 777 $SOURCE
+cd $SOURCE
+for i in `ls | grep -v rdy`
+do
+   if [ -f $i.rdy ]
+     then
+       mv $i $TARGET
+       rm $i.rdy
+       rm $TARGET/*-processed
+   fi
+done
+
+----
+And on the master something like this:
+
+----
+#!/bin/bash -x
+
+#################################
+# REPLACE with something valid
+KEY=/some/ssh/key
+
+#REPLACE 1.1.1.1 with SLAVE IP
+TARGET=1.1.1.1
+
+##################################
+
+/bin/ps ax | /bin/grep -v grep | /bin/grep lessfs
+[ $? -ne 0 ] && exit -10
+
+CNT=`/bin/ps ax | /bin/grep replicate.sh | /bin/grep -v grep | wc -l`
+[ $CNT -ne 3 ] && exit -1
+
+/bin/ping -c3 $TARGET
+[ $? != 0 ] && exit -3
+
+DEST=/data/incomming
+SOURCEDIR=/data/dta
+cd $SOURCEDIR
+for i in `ls replog.dta-*`
+do
+   /usr/bin/scp -i $KEY $i replicator@$TARGET:$DEST
+   [ $? != 0 ] && exit -4
+   /bin/touch $i >/tmp/$i.rdy
+   /usr/bin/scp -i $KEY /tmp/$i.rdy replicator@$TARGET:$DEST
+   [ $? != 0 ] && exit -5
+   /bin/rm /tmp/$i.rdy
+   /bin/rm $i
+done
+----
+
+As of lessfs-1.5.6 you can force the rotation of the replication logfiles:
+echo 1 >/.lessfs/replication/rotate_replog
+
+Last but not least you can use replogtool to commit replication logfiles
+against an unmounted slaves databases.
+See replogtool.1 for details.
+
+When lessfs uses the built-in replication then 
+the line REPLICATION_ENABLED may be added to the master.
+When REPLICATION_ENABLED=on (default) any data stored on the master
+filesystem will be replicated to the slave. When REPLICATION_ENABLED=off
+is selected data written to the master is written to a replication logfile
+in the BLOCKDATA_PATH directory to be written at a later time.
+
+Replication can be enabled or disabled without unmounting lessfs.
+echo 0 >/.lessfs/replication/enabled will disabled replication.
+This can be used on the master as well as the slave.
+It is therefore very ease to create a cron script that enables/disables
+replication at certain times.
+
+To monitor problems with replication it is possible to check
+for the existence of a backlog on the master. There a two ways
+of doing this :
+ls -l /YOUR_BLOCKDATA_PATH/
+The file replog.dta should have 0 as file size.
+Easier is to check /.lessfs/replication/backlog
+cat /master/.lessfs/replication/backlog
+0
+When replication is enabled and working properly this should return 0.
+In case of a backlog this will return 1 to indicate that a backlog exists.
+
+Lessfs uses CRC32 checksums to ensure that no data is garbled during transmission.
+
+When LFS replication is enabled the master server controls the database
+transaction commits on the slave. The commits are scheduled in such a
+way the the master and the slave commit at different times.
+This reduces the change of data corruption of master and slave in case
+of a power outage on both nodes at the same time.

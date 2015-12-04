@@ -1,0 +1,8 @@
+chunk_io is a new backend that is usable with btrfs and a blocksize of 128k.
+It stores the incomming data a files in a hashed directory structure.
+
+The advantage of chunk_io is that data that is deleted from the filesystem will actually free up space.
+file_io will only mark the deleted chunks as being reusable for lessfs but will not shrink the blockdata file.
+
+With chunk_io the underlying filesystem is more or less used as a database.
+Filesystems that use btree's (like btrfs or reiserfs) will perform better with lessfs then others. 

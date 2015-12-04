@@ -1,0 +1,2 @@
+If you are upgrading lessfs prior to 1.5.2 and you are using replication then make sure that lessfs is cleanly unmounted before trying to upgrade.
+When lessfs-1.5.2 needs to recover and rollback transactions from lessfs < 1.5.2 it will truncate the replication logfile to 0 bytes and therefore corrupt the slave.

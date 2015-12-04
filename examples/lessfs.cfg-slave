@@ -1,0 +1,73 @@
+# Enable informational messages about compression.
+DEBUG = 5
+HASHNAME=MHASH_TIGER192
+#HASHNAME=MHASH_SHA256
+# The (chopped) hashlen in bytes, minimum is 20.
+HASHLEN = 24
+#BLOCKDATA_IO_TYPE=file_io
+#BLOCKDATA_PATH=/data/slave/dta/blockdata.dta
+BLOCKDATA_PATH=/data/slave/dta
+BLOCKDATA_BS=1048576
+#
+BLOCKUSAGE_PATH=/data/slave/mta
+BLOCKUSAGE_BS=1048576
+#
+DIRENT_PATH=/data/slave/mta
+DIRENT_BS=1048576
+#
+FILEBLOCK_PATH=/data/slave/mta
+FILEBLOCK_BS=1048576
+#
+META_PATH=/data/slave/mta
+META_BS=1048576
+#
+HARDLINK_PATH=/data/slave/mta
+HARDLINK_BS=1048576
+#
+SYMLINK_PATH=/data/slave/mta
+SYMLINK_BS=1048576
+#
+# The freelist database is only used
+# with the  file_io backend
+#
+FREELIST_PATH=/data/slave/mta
+FREELIST_BS=1048576
+#
+# CACHESIZE in MB
+CACHESIZE=1024
+# Flush data to disk after X seconds.
+COMMIT_INTERVAL=30
+#
+LISTEN_IP=127.0.0.1
+LISTEN_PORT=101
+# Not more then 2 on most machines.
+MAX_THREADS=8
+#DYNAMIC_DEFRAGMENTATION on or off, default is off.
+DYNAMIC_DEFRAGMENTATION=on
+COREDUMPSIZE=2560000000
+# Consider SYNC_RELAX=1 or SYNC_RELAX=2 when exporting lessfs with NFS.
+SYNC_RELAX=0
+# Requires openssl and lessfs has to be configured with --with-crypto
+ENCRYPT_DATA=off
+# ENCRYPT_META on or off, default is off
+# Requires ENCRYPT_DATA=on and is otherwise ignored.
+ENCRYPT_META=on
+# You don't like fsck?
+ENABLE_TRANSACTIONS=on
+# Select a blocksize to fit your needs.
+BLKSIZE=131072
+#BLKSIZE=65536
+#BLKSIZE=32768
+#BLKSIZE=16384
+#BLKSIZE=4096
+#COMPRESSION=none
+COMPRESSION=qlz
+#COMPRESSION=lzo
+#COMPRESSION=bzip
+#COMPRESSION=deflate
+#COMPRESSION=disabled
+REPLICATION=masterslave
+REPLICATION_ROLE=slave
+REPLICATION_LISTEN_IP=0.0.0.0
+REPLICATION_WATCHDIR=/data/dta
+REPLICATION_LISTEN_PORT=101

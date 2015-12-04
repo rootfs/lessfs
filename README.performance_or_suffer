@@ -1,0 +1,22 @@
+Many people have been complaining about bad performance 
+with lessfs. The problem is often that lessfs is mounted
+with a 4k blocksize. When you mount lessfs with a 4k 
+blocksize an enormous amount of metadata has to be 
+stored. This reduces the performance in a really bad way.
+Please use lessfs with a blocksize of at least 32k.
+Using lessfs with a 64k or 128k blocksize is advised.
+In most cases 128k gives the best result.
+
+./lessfs /etc/lessfs.cfg /fuse  -o negative_timeout=0,\
+  entry_timeout=0,attr_timeout=0,use_ino,readdir_ino,\
+  default_permissions,allow_other,big_writes,\
+  max_read=131072,max_write=131072 
+
+When your system has multiple disks it makes sense to
+store the meta data on different low latency disks (raid1)
+or even better SSD.
+
+BLOCKUSAGE_PATH and FILEBLOCK_PATH are the most important
+candidates to store on separate disks when lessfs is 
+used with tokyocabinet. If you are using BerkeleyDB or 
+hamsterdb then point META_PATH to your low latency (SSD) drive.

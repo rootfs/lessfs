@@ -1,0 +1,24 @@
+#
+# Set the database in memory cache size.
+#
+# Set the database cache to 2 chunks of 1G
+set_cachesize   1       0    2
+#
+# Set database flags.
+# DB_TXN_WRITE_NOSYNC is relatively dangerous
+# The need for speed...
+#set_flags       DB_TXN_WRITE_NOSYNC
+set_flags       DB_LOG_AUTOREMOVE
+#set_flags DB_TXN_WRITE_NOSYNC
+#set_flags DB_TXN_NOSYNC
+#
+# Set log values.
+#
+set_lg_regionmax        52428800
+set_lg_max              10485760
+# We really need these, my system uses approx 6000
+set_lk_max_locks   150000
+set_lk_max_lockers 150000
+set_lk_max_objects 150000
+set_lg_bsize    2097152
+set_lg_max      8388608

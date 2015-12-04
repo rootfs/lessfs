@@ -1,0 +1,80 @@
+# Enable informational messages about compression.
+DEBUG = 5
+HASHNAME=MHASH_TIGER192
+#HASHNAME=MHASH_SHA256
+# The (chopped) hashlen in bytes, minimum is 20.
+HASHLEN = 24
+BLOCKDATA_IO_TYPE=file_io
+BLOCKDATA_PATH=/data/dta/blockdata.dta
+#BLOCKDATA_IO_TYPE=chunk_io
+#BLOCKDATA_PATH=/data/dta/
+#BLOCKDATA_PATH=/data/dta
+#BLOCKDATA_BS=1048576
+#
+BLOCKUSAGE_PATH=/data/mta
+BLOCKUSAGE_BS=1048576
+#
+DIRENT_PATH=/data/mta
+DIRENT_BS=1048576
+#
+FILEBLOCK_PATH=/data/mta
+FILEBLOCK_BS=1048576
+#
+META_PATH=/data/mta
+META_BS=1048576
+#
+HARDLINK_PATH=/data/mta
+HARDLINK_BS=1048576
+#
+SYMLINK_PATH=/data/mta
+SYMLINK_BS=1048576
+#
+# The freelist database is only used
+# with the  file_io backend
+#
+FREELIST_PATH=/data/mta
+FREELIST_BS=1048576
+#
+# CACHESIZE in MB
+CACHESIZE=1024
+# Flush data to disk after X seconds.
+COMMIT_INTERVAL=10
+#
+LISTEN_IP=127.0.0.1
+LISTEN_PORT=100
+# Not more then 2 on most machines.
+MAX_THREADS=8
+#DYNAMIC_DEFRAGMENTATION on or off, default is off.
+DYNAMIC_DEFRAGMENTATION=on
+COREDUMPSIZE=2560000000
+# Consider SYNC_RELAX=1 or SYNC_RELAX=2 when exporting lessfs with NFS.
+SYNC_RELAX=0
+# When BACKGROUND_DELETE=on lessfs will spawn a thread to delete
+# a file as a background task. This is a recently added feature
+# and is therefore disabled by default.
+BACKGROUND_DELETE=off
+# Requires openssl and lessfs has to be configured with --with-crypto
+ENCRYPT_DATA=off
+# ENCRYPT_META on or off, default is off
+# Requires ENCRYPT_DATA=on and is otherwise ignored.
+ENCRYPT_META=on
+# You don't like fsck?
+ENABLE_TRANSACTIONS=on
+# Select a blocksize to fit your needs.
+BLKSIZE=131072
+#BLKSIZE=65536
+#BLKSIZE=32768
+#BLKSIZE=16384
+#BLKSIZE=4096
+#COMPRESSION=none
+COMPRESSION=qlz
+#COMPRESSION=lzo
+#COMPRESSION=bzip
+#COMPRESSION=deflate
+#COMPRESSION=disabled
+#REPLICATION=masterslave
+#REPLICATION_PARTNER_IP=127.0.0.1
+#REPLICATION_PARTNER_PORT=101
+#REPLICATION_ROLE=master
+#REPLICATION_LISTEN_IP=127.0.0.1
+#REPLICATION_LISTEN_PORT=101

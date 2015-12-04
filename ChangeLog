@@ -1,0 +1,518 @@
+        release                 : 1.7.0 2013-11-16
+                                : Changed lib_hamster.c to support the latest hamsterdb API
+                                : Code cleanup.
+        release                 : 1.5.13 2013-02-07
+                                : Solves a missing DBTzero in dnode_bname_to_inode (bdb).
+                                : Thanks to : Sebastian Herbszt
+                                : Solves a problem that caused the 
+                                : replog.dta not be created in dta-directory 
+                                : Thanks to : Hardy Flor
+        release                 : 1.5.11 2012-04-21
+                                : Actually use the new hamsterdb cache. ;-)
+        release                 : 1.5.11 2012-04-21
+                                : A bug in configure.in caused DEBUG to support
+                                : to be compiled in when --disable-debug was specified.
+                                : This was a major cause of slow performance reports.
+                                : Added HAMSTERDB_CACHESIZE to allow users to specify
+                                : the size in bytes that hamsterdb is allowed for caching 
+                                : internally.
+        release                 : 1.5.10 2012-04-20
+                                : Adds compatibility with hamsterdb-2.0.1
+                                : Do not use hamsterdb-2.0.0 since it contains a 
+                                : serious bug!
+        release                 : 1.5.9 2012-01-22
+                                : Solves a buf with snappy compression, 
+                                : which could lead to crashes.
+                                : Solves a bug in the fsync code which could lead to
+                                : incomplete writes at unmount.
+                                : Fixes BACKGROUND_DELETE not being parsed right as
+                                : well as a deadlock when BACKGROUND_DELETE is disabled. 
+        release                 : 1.5.8 2011-09-29
+                                : Code clean-ups.
+        release                 : 1.5.7 2011-09-17
+                                : Fix a possible deadlock (timing) introduced in 1.5.6
+                                : Adds support for google SNAPPY compression.
+        release                 : 1.5.6 2011-09-16
+                                : Added support to force replog rotation 
+                                : echo 1 >/.lessfs/replication/rotate_replog
+                                : Solved a bug that caused the replog not to rotate after
+                                : REPLOG_DELAY had expired.
+                                : lessfs_stats now shows the compression/deduplication ratio.
+                                : Bug fix that increases the IOPS performance of lessfs from
+                                : approx 1000 IOPS to > 6000 IOPS. (Measured with BDB on an
+                                : Intel X25M SSD).
+        release                 : 1.5.4 2011-09-12
+                                : Important file_io reclaim bug fixes.
+        release                 : 1.5.3 2011-09-06
+                                : More replication fixes that insure data integrity 
+                                : after an unclean shutdown of the master or the slave.
+        release                 : 1.5.2 2011-09-05
+                                : Fixes with replication after an unclean shutdown of the master.
+                                : In this case the master would revert the running transactions but
+                                : failed to remove them from the replication logfile.
+                                : Removes flock when used with chunk_io
+        release                 : 1.5.0 2011-08-04
+                                : Lessfs now supports database partitioning (BerkeleyDB only)
+                                : and a new data backend called chunk_io. Use chunk_io only with
+                                : btrfs. An advantage of chunk_io is that deleting data will
+                                : actually free up space. However the overall performance is lower
+                                : and very depended on the type of filesystem that is used.
+                                : btrfs works well, others are significantly slower.
+        release                 : 1.4.10 2011-06-26
+                                : Solves a problem with mklessfs when used with tokyocabinet
+                                : and tc as datastore. Using TC as datastore is now DEPRECATED
+                                : BerkeleyDB now supports using DB_PRIVATE. 
+                                : Instead of using db_stat use telnet localhost bdb_status
+        release                 : 1.4.9 2011-06-22
+                                : Lessfs can now log to a file as well as syslog.
+                                : File logging can be enabled with configure --enable-filelog
+                                : after which lessfs will log to : /var/log/lessfs.log
+        release                 : 1.4.8 2011-06-06
+                                : Solves a problem that would cause lessfschk to segfault.
+                                : Fixes a problem with rename and inode caching.
+                                : Adds backward compatability with <= lessfs-1.4.2
+        release                 : 1.4.7 2011-05-31
+                                : Solves a problem with the new block sort routines that
+                                : can cause a segfault. Also fixes a problem where hardlinking
+                                : a hardlink would sometimes return a not null terminated string.
+        release                 : 1.4.6 2011-05-29
+                                : Solves a problem with sorting the blocks.
+        release                 : 1.4.5 2011-05-27
+                                : The worker threads now sort the work that needs to be done
+                                : one inode-blocknr so that data will be written sequential
+                                : on disk. -ENOSPC handling. Lessfs now no longer freezes
+                                : when the disk fills up. Instead it returns -ENOSPC.
+                                : When the disk is filled to MIN_SPACE-FREE - 3% lessfs 
+                                : will now reclaim space much more agressive.
+                                : Lessfs now uses HASH databases instead of BTREE databases
+                                : when compiled with BerkeleyDB.
+        release                 : 1.4.2 2011-05-09
+                                : since BerkeleyDB 4.3
+                                : Berkeley DB supports degree 2 isolation, which discards 
+                                : read locks held by a transaction in order to minimize 
+                                : the number of locks required by, for example, a cursor 
+                                : iterating through a database. Lessfs now uses this isolation
+                                : level and as a result use less locks and is 10% faster then 
+                                : lessfs-1.4.0 with BDB. A nasty bug with hamsterdb was solved.
+        release                 : 1.4.0 2011-05-05
+                                : This is a new major release of lessfs.
+                                : It's focus has been on reliability and crash recovery.
+                                : Lessfs now comes with support for Berkeleydb which is the
+                                : only backend that survived all our tests. Also changed is
+                                : the way that deleted chunks are recycled.
+                                : Other changes : The lessfs replication sequence can be read
+                                : from .lessfs/replication/sequence. This file is only used
+                                : with batch replication.
+        release                 : 1.3.3.12 2011-04-28
+                                : Added support for hamsterdb in listdb.
+                                : When used with batch replication the master will now 
+                                : close the replication log after reaching the configured size
+                                : or after 15 minutes, whatever comes first.
+                                : The interval can be adjusted at compile time in lib_repl.h
+                                : #define REPLOG_DELAY 15*60
+        release                 : 1.3.3.11 2011-04-17
+                                : Lessfs now supports 'batch' replication. The master will
+                                : create replication logfiles with a sequence number. The slave
+                                : will scan a 'watchdir' and process the replication logfiles.
+        release                 : 1.3.3.9  2011-04-06
+                                : A new tool that allows commiting replication logfiles to
+                                : a slave. This enables the use of for example sftp to transfer
+                                : replication logfiles. Replication has been improved.
+        release                 : 1.3.3.8  2011-03-23
+                                : lessfs_read has been optimized.
+        release                 : 1.3.3.7  2011-03-19
+                                : Solves a problem where entering 0.0.0.0 as replication
+                                : listen IP failed to work. Solves a problem that would
+                                : cause fsx-linux to fail on lessfs running on i386.
+        release                 : 1.3.3.6  2011-03-18
+                                : Minor code cleanups. Lessfs now compiles with -Werror.
+        release                 : 1.3.3.5  2011-03-15
+                                : Minor code cleanups.
+        release                 : 1.3.3.4  2011-03-08
+                                : Replication connect fix.
+        release                 : 1.3.3.3  2011-03-07
+                                : Major rewrite of the replication code.
+        release                 : 1.3.3.1  2011-02-02
+                                : Fixes cache corruption bug in lessfs with hamsterdb.
+        release                 : 1.3.3    2011-02-02
+                                : Disable mmap use with hamsterdb. 
+                                : Improved replication. Many code cleanups.
+        release                 : 1.3.2    2011-01-19
+                                : Make hamsterdb work without transactions.
+        release                 : 1.3.1    2011-01-15
+                                : Fixes a memory leak in add2cache.
+                                : Fixes a problem that would cause lessfs to segfault when 
+                                : used with encryption. Adds support for hamsterdb.
+        release                 : 1.2.2.6  2010-12-22
+                                : Fixes a silly mistake that may cause a segfault upon mounting.
+        release                 : 1.2.2.5  2010-12-22
+                                : Fixes a problem with lessfs_stats.
+        release                 : 1.2.2.4  2010-12-19
+                                : Improved cache eviction.
+                                : When a lot of small files are copied, exceeding cache size,
+                                : this change improves the performance with 40%.
+                                : time tar xjf /home/maru/Downloads/linux-2.6.34.tar.bz2
+                                : now takes : 1m11.810s where it takes 2m9.838s with lessfs 1.2.2.3.
+        release                 : 1.2.2.3  2010-12-19
+                                : This release improves the speed of metadata operations 
+                                : by 30~50%.
+        release                 : 1.2.2.2  2010-12-12
+                                : This release enables some sane cache settings by default.
+                                : It also solves a problem with sending the replication backlog.
+                                : The lib_tc code has been split in two files.
+        release                 : 1.2.2    2010-12-3
+                                : Solved some minor configuration problems with replication.
+        release                 : 1.2.1    2010-11-31
+                                : Added support for a commercial only backend.
+        release                 : 1.2.0    2010-10-31
+                                : Improves the speed of metadata operations with 8%.
+                                : lessfsck now defaults to a faster mode of operation.
+                                : It used to check the inodes as well as the metadata.
+                                : Now it only checks the metadata by default.
+                                : It is still possible to check the file integrity
+                                : by selecting the -t flag with lessfschk.
+        release                 : 1.1.9.10 2010-10-27
+                                : Introduces a cache layer for metadata making this
+                                : release up to 12 times faster when small files are copied.
+        release                 : 1.1.9.8  2010-10-18
+                                : Fixes a memory leak when used with encryption enabled.
+                                : Improved write performance.
+        release                 : 1.1.9.7  2010-10-17
+                                : Fixes a bug where truncation would fail when encryption had been
+                                : selected with the tc datastore.
+        release                 : 1.1.9.6  2010-10-13
+                                : This enables lessfs background truncation threads
+                                : to resume after an umount or shutdown. Background truncation
+                                : is now enabled by default. Because lessfs uses the freelist
+                                : database to keep truncation state this database now needs
+                                : to be configured in lessfs.cfg even when using the tc datastore.
+        release                 : 1.1.9.1  2010-10-01
+                                : Fixes a problem with replication.
+                                : Prioritizes reads and writes above truncation.
+        release                 : 1.1.9.1  2010-09-29
+                                : Fixes some nasty bugs with replication. Improves the du, ls -als
+                                : statistics as well as better .lessfs_stats when lessfs
+                                : truncates a file. .lessfs_stats is now fairly accurate when
+                                : used with file_io. A problem that is not solved is that when
+                                : a file is stored twice on lessfs, the second time it will
+                                : show that the file uses 0 bytes. This is true until we remove
+                                : the first copy of the file. A that time the second copy of the
+                                : file is the reason that the blocks are still on the filesystem.
+                                : It is however very difficult if not impossible with the current
+                                : implementation to link these blocks back to file2.
+        release                 : 1.1.9    2010-09-25
+                                : Lessfs now supports asynchronous replication as well as
+                                : synchronous replication. Please read the README.replication
+                                : Background delete now appears to be very stable. This may
+                                : become the default at the next release.
+        release                 : 1.1.8.1  2010-09-21
+                                : Fixes a small bug that disabled lessfs_stats 
+        release                 : 1.1.8    2010-09-20
+                                : This release contains a number of small bug fixes as well
+                                : as improved truncation code. Lessfs can now truncate
+                                : files as a background process. Files that are being truncated
+                                : are no longer read/write locked but are now only write locked.
+                                : During truncation a file with the inodenumber of the truncated file
+                                : as filename will be visible in /.lessfs/locks/ to indicate that
+                                : the inode is still being processed.
+        release                 : 1.1.6    2010-08-22
+                                : This release adds a number of features to lessfs.
+                                : A. Lessfs is now able to spawn a background thread for 
+                                : delete operations. Truncate and delete operations will
+                                : appear to be very fast when this feature is enabled.
+                                : B. Lessfs now supports native synchronous replication.
+                                : This should be considered alpha code, although it
+                                : works for me ;-). For now the lessfs master will wait
+                                : for ever on the slave. So if the slave dies or disconnects
+                                : the master will try to reconnect and freeze until this 
+                                : has succeeded. In the future it will be possible to
+                                : have the master write a backlog after a certain amount of time
+                                : or after manual intervention.
+        release                 : 1.1.5    2010-07-21
+                                : Improves crash resilience by inserting test transactions
+                                : when lessfs is mounted. If a test transaction fails the 
+                                : database is automatically optimized (repaired).
+                                : This release also fixes a bug where lessfs could deadlock
+                                : when used with samba.
+        release                 : 1.1.4    2010-07-16
+                                : Improves lessfschk.
+        release                 : 1.1.3    2010-07-15
+                                : This release fixes a problem where lessfs would leave
+                                : orphaned data chunks in the system under high load.
+                                : A number of problems with lessfschk has been solved.
+        release                 : 1.1.2    2010-07-07
+                                : This release fixes a bug discovered by Dave.
+                                : Lessfs now survives this test script:
+                                : #! /bin/bash
+                                : for n in $(seq -w 1 10 ); do
+                                :  mkdir /data1/data/fsx$n
+                                :  cd /data1/data/fsx$n
+                                :  fsx-linux all >/tmp/fsx$n &
+                                :
+                                :  mkdir /data1/data/bonnie$n
+                                :  bonnie++ -u root -d /data1/data/bonnie$n >/tmp/bonnie$n 2>&1 &
+                                :
+                                :  mkdir /data1/data/iozone$n
+                                :  cd /data1/data/iozone$n
+                                :  iozone -a >/tmp/iozone$n &
+                                : done
+                                : Performance has also improved... 
+        release                 : 1.1.1    2010-07-02
+                                : This release fixes a race condition that will manifest
+                                : itself when lessfs is under heavy IO.
+        release                 : 1.1.0    2010-06-30
+                                : Marc Christiansen has provided a patch that fixed a crash
+                                : and enhances lessfs_stats output. Many problems have
+                                : been fixed with the new cache code.
+        release                 : 1.1.0-beta5    2010-06-20
+                                : Fixes a bug where reads would mostly mis the cache.
+                                : Read performance has now dramatically (300%) increased
+                                : for chunks of data that are found in the cache.
+        release                 : 1.1.0-beta4    2010-06-19
+                                : Fixes a (rare) race condition with the file_io backend.
+                                : Improved write performance when writing smaller then 
+                                : BLKSIZE data chunks. General code cleaning.
+        release                 : 1.1.0-beta3    2010-06-15
+                                : Under some circumstances a newly written block of data
+                                : with hash (A) could be overwritten before the previous
+                                : write had finished. A new 'per hash' locking mechanisme 
+                                : now makes sure that this never happens.
+                                : See create_hash_note for details.
+        release                 : 1.1.0-beta2    2010-06-13
+                                : Fixed a deadlock. Lessfs now supports deadlock reporting 
+                                : and debugging. ;-)
+        release                 : 1.1.0-alpha1   2010-06-02
+                                : This release changes lessfs internals in a major way.
+                                : Lessfs-1.1.0 is _not_ compatible with previous lessfs versions.
+                                : This new version provides a much improved cache layer and
+                                : way better performance. Threading has been improved and lessfs
+                                : is now capable of using many threads /CPU's.
+        release                 : 1.0.8   2010-11-30
+                                : This release enables lessfs to be mounted without the
+                                : need to specify other options then the configuration file
+                                : and the mountpoint. Please consult the manual for more
+                                : details. Eric D. Garver contributed a patch that
+                                : makes the build process less picky about missing
+                                : GNU files like INSTALL and NEWS. A bug in lessfs_read
+                                : has been found by extensive testing with fsx-linux. In
+                                : cases where a sparse block of data would be followed by
+                                : a normal block lessfs_read would return wrong data in 
+                                : some cases. Added automatic migration support for older 
+                                : lessfs versions.
+        release                 : 1.0.7   2010-11-27
+                                : This release fixes a problem where data copied
+                                : from windows to lessfs (samba) would show the wrong
+                                : nr of blocks. This would result in du reporting wrong
+                                : numbers.
+        release                 : 1.0.6   2010-11-07
+                                : Fixes a segfault that may occur when lessfs is used 
+                                : without transactions enabled. The segfault occurs when
+                                : lessfs is unmounted after closing the databases. The 
+                                : impact of the bug is therefore low.
+        release                 : 1.0.5   2010-03-07
+                                : Fixes a small problem with logging.
+        release                 : 1.0.4   2010-03-04
+                                : This release enables support for transactions/checkpointing.
+                                : Lessfs now no longer needs fsck after a crash. Also new is the ability to
+                                : run a program when disk space drops below a certain amount of space. This program
+                                : can be used to free up space when the tokyocabinet datastore is used.
+        release                 : 1.0.1   2010-01-24
+                                : Fixes a rare race condition that can cause lessfs to segfault and crash.
+        release                 : 1.0.0   2009-12-30
+                                : Removed all the bugs. ;-)
+        release                 : 0.9.6   2009-12-21
+                                : Fix an erroneous free() that can crash lessfs upon startup
+                                : when the tiger hash is selected. Changes mklessfs so that
+                                : it supports automatic directory creation and database overwrites.
+                                : mklessfs now has improved error reporting.
+        release                 : 0.9.5   2009-12-17
+                                : This version of lessfs has been scrutinized for memory leaks.
+                                : One small issue with lessfs_utimes has also been solved.
+        release                 : 0.9.4   2009-12-16
+                                : Fixes two memory leaks that are related to hardlink operations.
+                                : Solves a problem caused by not initializing st_[a/c/m]time.tv_nsec.
+                                : Thanks to Wolfgang Zuleger for doing a great job on analyzing these bugs.
+                                : Fixed a memory leak in file_io.c
+        release                 : 0.9.3   2009-12-13
+                                : Partial file truncation encryption caused data corruption.
+        release                 : 0.9.2   2009-12-12
+                                : This release fixed some problems where permissions where not properly
+                                : set on open files. It also fixes a problem with the link count 
+                                : of directories. Performance for some meta data operations has improved.
+        release                 : 0.9.0   2009-12-09
+                                : Problems with truncation have finally been resolved.
+                                : Less now passes fsx-linux. rsync now works without problems.
+                                : Major changes of the truncation code.
+        release                 : 0.8.3   2009-11-15
+                                : Fixes a major bug in the truncation code.
+                                : This bug will crash lessfs when used with ccrypt or rsync –inplace.
+        release                 : 0.8.2   2009-11-09
+                                : Fixes a bug that causes lessfsck and mklessfs to segfault when compiled
+                                : with encryption support and encryption disabled in the config.
+                                : Fixes a bug that causes lessfs to segfault on umount when compiled
+                                : with encryption support and encryption disabled in the config.
+                                : lessfsck,listdb and mklessfs are now installed in /usr/sbin 
+                                : instead of /usr/bin.
+        release                 : 0.8.1   2009-11-07
+				: Fixes a bug that causes mklessfs to segfault when DEBUG is not set.
+				: Adds lessfsck. lessfsck can be used  to check, optimize and repair
+				: a lessfs filesystem. lessfsck only supports the tc data store for now.
+                                : Support for the file_io backend will come with release 0.8.2
+        release                 : 0.8.0   2009-10-26
+                                : Fixes a possible segfault when lessfs is used with lzo compression.
+                                : Fixes a problem when compiling lessfs without encryption on
+                                : a system without openssl-devel.
+                                : Enhances the logging facility.
+                                : Performance has improved on higher latency storage like drbd or iscsi.
+                                : Reduces the number of fsync operations when sync_relax>0.
+                                :
+                                : Thanks to : Roland Kletzing for finding and assisting 
+                                :             with solving some of the problems mentioned.
+                                :
+        release                 : 0.7.5   2009-10-16
+                                : Fix a segfault on free after unmounting lessfs without
+                                : encryption support. Fix a problem that could lead to a
+                                : deadlock when using file_io with NFS.
+                                : A performance improvement, changed a mutex lock for a
+                                : spinlock.  
+        release                 : 0.7.4   2009-10-12
+                                : This version of lessfs introduces a new hash named
+                                : Blue Midnight Whish.
+                                :
+                                : http://www.q2s.ntnu.no/sha3_nist_competition/start
+                                :
+                                : This is a very fast hash that increases lessfs performance
+                                : significantly. The implementation makes it easy to use any
+                                : of the hashes from the NIST hash competition. MBW was
+                                : choosen for lessfs because of the speed.
+                                : To use BMW : configure --with-sha3
+        release                 : 0.7.3   2009-10-06
+                                : Error on free.
+        release                 : 0.7.2   2009-10-06
+                                : Fixes a typo in lib_tc.c that could lead to data corruption.
+                                : @@ -990,7 +991,7 @@
+                                : if (NULL != cachedata) {
+                                : blk = (BLKCACHE *) cachedata->data;
+                                : binhash(blk->blockdata, BLKSIZE, res);
+                                : -                stiger=(unsigned char *) &res;
+                                : +                dtiger=(unsigned char *) &res;
+                                : One character does make difference...
+                                : Includes a small performance enhancement.
+        release                 : 0.7.1   2009-10-05
+                                : A complete new way to store data has been introduced.
+                                : The file_io backend has some advantages over tokyocabinet 
+                                : for storing the actual data blocks.
+                                : The performance has been improved.
+        release                 : 0.6.1   2009-09-06
+                                : Never improve code minutes before releasing it.
+                                : Fix a silly bug with mklessfs.
+        release                 : 0.6.0   2009-09-06
+                                : Added encryption support to lessfs. 
+                                : Fixed one small bug that would leave orphaned meta data in the
+                                : metadatabase when hardlinks where removed.
+                                : configure now has the option to select lzo compression as
+                                : well as an option for debugging. See ./configure --help
+        release                 : 0.5.0   2009-08-26
+                                : Improved thread locking that leads to much better performance.
+                                : Many NFS related problems have been solved and debugging
+                                : is now easier.
+
+        release                 : 0.2.8   2009-08-17
+                                : Many bugfixes, including incorrect filesize on writing
+                                : in a file with various offsets using lseek. This also
+                                : caused problems with NFS.
+
+        release                 : 0.2.7   2009-08-14
+                                : Fixed a problem where dbstat failed to return the proper
+                                : filesize. One other bug could leak to a deadlock of lessfs.
+
+        release                 : 0.2.6   2009-07-17
+                                : Fixed two bugs, one which could lead to data corruption.
+                                : One other that would leave deleted data in the database.
+
+        release                 : 0.2.5   2009-07-05
+                                : This release fixes to one minor and one major bug. 
+                                : One bug in the code would actually crash lessfs 
+                                : upon renaming a file or directory. lessfs-0.2.4
+                                : is no longer available for download.
+                                
+        release                 : 0.2.4   2009-07-05
+                                : This release add support for dynamic defragmentation.
+                                : Tokyocabinet supports this as of release 1.4.27
+                                : This feature is very important because in the long run
+                                : it is crucial for a normal filesystem that blocks of data
+                                : are really deleted upon request without defragmenting 
+                                : the filesystem. The old defragmentation method is still 
+                                : usefull and available. See the tokyocabinet documentation
+                                : for details about defragmentation.
+
+        release                 : 0.2.3   2009-06-24
+                                : This release fixes a small memory leak and improves
+                                : write performance in general approx 12%.
+        Known issues            : Using direct_io with kernel 2.6.30 causes reads to
+                                : continue for ever. I am not sure if this is a kernel
+                                : issue or a lessfs bug. With earlier kernels direct_io
+                                : works fine.
+
+
+        release                 : 0.2.2   2009-06-21
+                                : This release adds supports for NFS. It also fixes
+                                : some potential problems with the internal cache code.
+                                : NFS is only supported with kernel >= 2.6.30 earlier
+                                : kernels will corrupt large files written with NFS!
+                                : A lot of code has changed in this release so please
+                                : do not use this version for production.
+
+        release                 : 0.2.1   2009-06-10
+        Resolved problems       : Improved the performance of writes smaller then
+				  max_write in size. These writes will now remain long
+                                  enough in the cache so that subsequent writes to the
+                                  same block will update the cache instead of the database.
+                                  Mounting lessfs without formatting the filesystem now
+                                  logs a warning instead of creating a segfault.
+                                  Creating of sparse files now works again after being
+                                  broken in release 0.1.19.
+
+        release                 : 0.2.0   2009-05-25
+        Improved performance    : Added a cache that increases throughput with almost 30%.
+
+        release                 : 0.1.22  2009-05-14
+        Resolved problems       : One last problem with hardlinking symlinks.
+                                  Lessfs will now stop all I/O before the disks run out of space
+                                  and corrupt the databases.
+        Known problems          : Multithreaded I/O in the same file sometimes fails
+                                  under exceptional circumstances. (bonnie++).
+
+        release                 : 0.1.21  2009-05-05
+        Resolved problems       : Many problems related to hard en softlinks
+        Known problems          : Multithreaded I/O in the same file sometimes fails 
+				  under exceptional circumstances. (bonnie++).
+				  If the disk runs out of space the tokyocabinet database
+				  is corrupted.
+
+	release			: 0.1.20  2009-04-22
+	Resolved problems	: Fixed two bugs:
+				  1. Truncate operations would sometimes fail.
+				  2. unlink of hardlinked files would sometimes fail.
+      	Known problems          :
+
+	release			: 0.1.19  2009-04-08
+	Resolved problems	: Fixed a bug in the truncate code that would leave
+				: deleted chunks in the databases. 
+        Known problems		: 
+
+	release			: 0.1.18  2009-03-30
+	Resolved problems	: Code cleanup and partial rewrite of update_block. 
+        Known problems		:
+
+	release			: 0.1.17  2009-03-28
+	Resolved problems	: Reenable logging of statistics to syslog.
+        Known problems		:
+
+        release                 : 0.1.16  2009-03-27
+        Resolved problems       : Added configure script and fixed ARCH check.
+        Known problems          :
+
+Initial release                 : 0.1.15  2009-03-23
+        Resolved problems       :
+        Known problems          :

@@ -1,0 +1,78 @@
+
+      RELEASE NOTES FOR LESSFS + BERKELEYDB
+
+---------------------------------------------------
+
+Howto build:
+
+Lessfs with BerkeleyDB requires a recent version
+of BerkeleyDB. It's tested with BerkeleyDB 4.8
+
+To build from source:
+Download BerkeleyDB 4.8
+tar xf db-4.8.30.tar.gz
+cd db-4.8.30
+cd build_unix/
+../dist/configure
+make 
+make install
+
+Add /usr/local/BerkeleyDB.4.8/ to ld.so.conf
+
+tar xf lessfs-1.4.0.tar.gz
+cd lessfs-1.4.0
+export CFLAGS="-I /usr/local/BerkeleyDB.4.8/include/ -L /usr/local/BerkeleyDB.4.8/lib"
+./configure --with-berkeleydb
+make
+make install
+cp etc/lessfs.cfg-bdb.cfg /etc/lessfs.cfg
+
+Change /etc/lessfs.cfg
+mklessfs -f -c /etc/lessfs.cfg
+lessfs /etc/lessfs.cfg /your/mountpoint
+
+---
+
+Lessfs now supports BerkeleyDB next to tokyocabinet
+and hamsterdb. The decision to add BerkeleyDB was 
+taken because both tokyocabinet and hamsterdb failed
+to provide the reliability that is needed for the
+enterprise.
+
+Although BerkeleyDB is not the fastest of the three
+backends when used with a 128k blocksize the performance
+is acceptable. The reliability is very good, BerkeleyDB
+not only claims to be ACID but it really is very reliable
+when it comes to unexpected power downs and crashes.
+
+You can choose the degree of dataprotection that suits
+your needs by changing DB_CONFIG. Please take a look
+at the DB_CONFIG file in the lessfs distribution file.
+
+Do not use lessfs with berkeleydb without a DB_CONFIG file
+in the metadata directory!
+Should lessfs go down because of problems with BerkeleyDB
+it will generate a logfile which is defined in lib_bdb.h
+#define BERKELEYDB_ERRORLOG  "/var/log/lessfs-bdb_err.txt"
+
+A typical reason for a crash would be the absence of a
+DB_CONFIG file which will cause lessfs to run out of 
+bdb locks.
+
+# We really need these, my system uses approx 6000
+set_lk_max_locks   10000
+set_lk_max_lockers 10000
+set_lk_max_objects 10000
+
+When you add TUNEFORSPEED=yes to lessfs.cfg BerkeleyDB
+will be used with : DB_TXN_WRITE_NOSYNC
+and DB_TXN_NOSYNC | DB_TXN_NOWAIT
+
+This may increase the throughput of lessfs but it will
+increase the possibility of data loss!
+
+Since lessfs-1.4.0 the reuse of deleted data chunks is delayed
+to 10 * COMMIT_INTERVAL. This to ensure that whenever the system
+crashes and the database is reverted that no corruption will
+occur. When the database performs a rollback in time the actual data
+should not have been overwritten in the blockdata file.
